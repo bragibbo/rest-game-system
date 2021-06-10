@@ -1,0 +1,22 @@
+{
+  "name": "rest-game-system",
+  "version": "1.0.0",
+  "description": "A modular system for REST games",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bragibbo/rest-game-system.git"
+  },
+  "author": "Brayden Gibbons",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bragibbo/rest-game-system/issues"
+  },
+  "homepage": "https://github.com/bragibbo/rest-game-system#readme",
+  "dependencies": {
+    "aws-sdk": "^2.865.0"
+  }
+}
