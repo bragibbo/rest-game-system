@@ -2,6 +2,7 @@ const AWS = require("aws-sdk");
 AWS.config.update({ region: "us-west-2" });
 
 const dynamodb = new AWS.DynamoDB();
+const docClient = new AWS.DynamoDB.DocumentClient();
 
 async function createTable(params) {
   try {
@@ -61,3 +62,53 @@ async function initialize() {
 }
 
 initialize()
+
+export async function createItem(tableName, item) {
+  const params = {
+    TableName: tableName,
+    Item: item
+  }
+
+  try {
+    const res = await docClient.put(params).promise()
+    return res
+
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+
+}
+
+export async function getItem(tableName, keys) {
+  const params = {
+    TableName: tableName,
+    Key: keys
+  }
+
+  try {
+    const res = await docClient.get(params).promise()
+    return res
+  } catch(e) {
+    console.log(e)
+    return null
+  }
+}
+
+export async function updateTable(tableName, key, params) {
+  const params = {
+    TableName: tableName,
+    Key: key,
+    UpdateExpression: '',
+    ExpressionAttributeValues: {}
+  }
+
+  try {
+    const res = await docClient.update(params).promise() 
+    return res
+
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
