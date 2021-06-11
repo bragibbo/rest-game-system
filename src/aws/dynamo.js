@@ -63,7 +63,7 @@ async function initialize() {
 
 initialize()
 
-export async function createItem(tableName, item) {
+module.exports.createItem = async (tableName, item) => {
   const params = {
     TableName: tableName,
     Item: item
@@ -80,7 +80,7 @@ export async function createItem(tableName, item) {
 
 }
 
-export async function getItem(tableName, keys) {
+module.exports.getItem = async (tableName, keys) => {
   const params = {
     TableName: tableName,
     Key: keys
@@ -95,7 +95,7 @@ export async function getItem(tableName, keys) {
   }
 }
 
-export async function updateTable(tableName, key, params) {
+module.exports.updateTable = async (tableName, key, items) => {
   const params = {
     TableName: tableName,
     Key: key,
