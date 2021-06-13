@@ -1,13 +1,10 @@
-function InvalidArgumentException(message) {
-  this.message = message;
-  // Use V8's native method if available, otherwise fallback
-  if ("captureStackTrace" in Error)
-      Error.captureStackTrace(this, InvalidArgumentException);
-  else
-      this.stack = (new Error()).stack;
+class CustomError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name;
+  }
 }
 
-InvalidArgumentException.prototype = Object.create(Error.prototype);
-InvalidArgumentException.prototype.name = "InvalidArgumentException";
-InvalidArgumentException.prototype.constructor = InvalidArgumentException;
-module.exports.InvalidArgumentException
+class InvalidArgumentException extends CustomError { }
+
+module.exports.InvalidArgumentException = InvalidArgumentException

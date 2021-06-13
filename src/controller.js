@@ -1,5 +1,5 @@
 const game = require('./game')
-const errors = require('./util/errors')
+const { InvalidArgumentException } = require('./util/errors')
 
 module.exports.listOpenGames = () => {
 
@@ -43,5 +43,8 @@ module.exports.postGame = (req) => {
 function handleError(e) {
   if (e instanceof InvalidArgumentException) {
     return { status: 400, message: e.message}
+  } else {
+    console.error(e)
+    return { status: 500, message: e.message}
   }
 }

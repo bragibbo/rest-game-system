@@ -18,7 +18,6 @@ app.post('/game', (req, res) => {
 })
 
 app.post('/create', (req, res) => {
-  console.log(req)
   const response = controller.postCreate(req)
   res.status(response.status).send(response)
 })

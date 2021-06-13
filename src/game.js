@@ -1,8 +1,7 @@
 const dynamo = require('./aws/dynamo')
 const path = require('path');
 const fs = require('fs');
-const errors = require('./util/errors')
-
+const { InvalidArgumentException } = require('./util/errors')
 
 const modules = {}
 const modulesFolder = '/modules/';
@@ -17,8 +16,8 @@ module.exports.listOpenGames = () => {
 }
 
 module.exports.createGame = (gameObj) => {
-  if(!gameObj.gameName) throw new errors.InvalidArgumentException("No game name provided")
-  if(!gameObj.playerName) throw new errors.InvalidArgumentException("No player name provided")
+  if(!gameObj.gameName) throw new InvalidArgumentException("No game name provided")
+  if(!gameObj.playerName) throw new InvalidArgumentException("No player name provided")
 
   modules[gameObj.gameName].create(gameObj)
 
