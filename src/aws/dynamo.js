@@ -78,7 +78,26 @@ module.exports.getItem = async (keys) => {
   }
 }
 
-module.exports.updateTable = async (key, items) => {
+module.exports.upsert = async (item) => {
+  const params = {
+    TableName: GAME_OBJECTS_TABLE,
+    Item: item,
+    ConditionExpression: 'attribute_not_exists(id)'
+  };
+
+  try {
+    const res = await docClient.putItem(params).promise()
+    return res
+  } catch(e) {
+    if (e instanceof docClient.ConditionalCheckFailedException) {
+      return await this.getItem(item)
+    }
+    console.log(e)
+    return null
+  }
+}
+
+module.exports.updateTable = async (tableName, key, items) => {
   const params = {
     TableName: GAME_OBJECTS_TABLE,
     Key: key,

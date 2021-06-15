@@ -7,24 +7,23 @@ const port = 3000
 
 const controller = require('./src/controller')
 
-app.get('/game', (req, res) => {
-  const response = controller.getGame(req)
+app.get('/game', async (req, res) => {
+  const response = await controller.getGame(req)
   res.status(response.status).send(response)
 })
 
-app.post('/game', (req, res) => {
-  const response = controller.postGame(req)
+app.post('/game', async (req, res) => {
+  const response = await controller.postGame(req)
   res.status(response.status).send(response)
 })
 
-app.post('/create', (req, res) => {
-  console.log(req)
-  const response = controller.postCreate(req)
+app.post('/create', async (req, res) => {
+  const response = await controller.postCreate(req)
   res.status(response.status).send(response)
 })
 
-app.post('/join', (req, res) => {
-  const response = controller.posJoin(req)
+app.post('/join', async (req, res) => {
+  const response = await controller.posJoin(req)
   res.status(response.status).send(response)
 })
 
