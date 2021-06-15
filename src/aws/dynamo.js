@@ -4,6 +4,8 @@ AWS.config.update({ region: "us-west-2" });
 const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 
+const GAME_OBJECTS_TABLE = "GameObjects"
+
 async function createTable(params) {
   try {
     const res = await dynamodb.createTable(params).promise()
@@ -20,12 +22,14 @@ async function createTable(params) {
 
 async function createGameObjectTable() {
   const gameObjectParams = {
-    TableName : "GameObjects",
+    TableName : GAME_OBJECTS_TABLE,
     KeySchema: [       
         { AttributeName: "game_id", KeyType: "HASH"},  //Partition key
+        { AttributeName: "object_type", KeyType: "RANGE"},  //Partition key
     ],
     AttributeDefinitions: [       
         { AttributeName: "game_id", AttributeType: "S" },
+        { AttributeName: "object_type", AttributeType: "S"},
     ],
     ProvisionedThroughput: {       
       ReadCapacityUnits: 5, 
@@ -36,36 +40,15 @@ async function createGameObjectTable() {
   await createTable(gameObjectParams)
 }
 
-async function createGameUserTable() {
-  const gameUsersParams = {
-    TableName : "GameUsers",
-    KeySchema: [       
-        { AttributeName: "game_id", KeyType: "HASH"},  //Partition key
-        { AttributeName: "user_name", KeyType: "RANGE" }  //Sort key
-    ],
-    AttributeDefinitions: [       
-        { AttributeName: "game_id", AttributeType: "S" },
-        { AttributeName: "user_name", AttributeType: "S" }
-    ],
-    ProvisionedThroughput: {       
-      ReadCapacityUnits: 5, 
-      WriteCapacityUnits: 5
-  }
-  };
-
-  await createTable(gameUsersParams)
-}
-
 async function initialize() {
   await createGameObjectTable()
-  await createGameUserTable()
 }
 
 initialize()
 
-module.exports.createItem = async (tableName, item) => {
+module.exports.createItem = async (item) => {
   const params = {
-    TableName: tableName,
+    TableName: GAME_OBJECTS_TABLE,
     Item: item
   }
 
@@ -80,9 +63,9 @@ module.exports.createItem = async (tableName, item) => {
 
 }
 
-module.exports.getItem = async (tableName, keys) => {
+module.exports.getItem = async (keys) => {
   const params = {
-    TableName: tableName,
+    TableName: GAME_OBJECTS_TABLE,
     Key: keys
   }
 
@@ -95,9 +78,9 @@ module.exports.getItem = async (tableName, keys) => {
   }
 }
 
-module.exports.updateTable = async (tableName, key, items) => {
+module.exports.updateTable = async (key, items) => {
   const params = {
-    TableName: tableName,
+    TableName: GAME_OBJECTS_TABLE,
     Key: key,
     UpdateExpression: '',
     ExpressionAttributeValues: {}
