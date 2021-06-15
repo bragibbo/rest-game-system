@@ -20,7 +20,7 @@ module.exports.createGame = async (gameObj) => {
   if(!gameObj.gameName) throw new InvalidArgumentException("No game name provided")
 
   const newGameObj = modules[gameObj.gameName].create(gameObj, uuidv4())
-  // await dynamo.createItem('GameObjects', newGameObj)
+  await dynamo.createItem('GameObjects', newGameObj)
   return newGameObj
 }
 

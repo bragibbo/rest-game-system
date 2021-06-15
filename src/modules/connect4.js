@@ -4,7 +4,7 @@ const { InvalidPlayerNumberException } = require('../util/errors')
 const GAME_NAME = 'connect4'
 const MAX_NUM_PLAYERS = 2
 
-module.exports.create = async (gameObj, gameId) => {
+module.exports.create = (gameObj, gameId) => {
   return {
     game_id: gameId,
     game_name: GAME_NAME,

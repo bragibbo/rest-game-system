@@ -8,7 +8,6 @@ module.exports.listOpenGames = () => {
 module.exports.postCreate = async (req) => {
   try {
     const body = await game.createGame(req.body)
-    console.log(body)
     return { status: 201, game: body }
   } catch (e) {
     return handleError(e);
