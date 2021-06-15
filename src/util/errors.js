@@ -6,5 +6,7 @@ class CustomError extends Error {
 }
 
 class InvalidArgumentException extends CustomError { }
+class InvalidPlayerNumberException extends CustomError { }
 
 module.exports.InvalidArgumentException = InvalidArgumentException
+module.exports.InvalidPlayerNumberException = InvalidPlayerNumberException
