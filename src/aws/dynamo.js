@@ -9,8 +9,7 @@ const GAME_OBJECTS_TABLE = "GameObjects"
 async function createTable(params) {
   try {
     const res = await dynamodb.createTable(params).promise()
-    console.log(res)
-
+    console.log(`${params.tableName} created`)
   } catch (e) {
     if (e.name === 'ResourceInUseException') {
       console.log(`${params.TableName} table already exists`)
@@ -52,15 +51,8 @@ module.exports.createItem = async (item) => {
     Item: item
   }
 
-  try {
-    const res = await docClient.put(params).promise()
-    return res
-
-  } catch (e) {
-    console.log(e)
-    return null
-  }
-
+  const res = await docClient.put(params).promise()
+  return res
 }
 
 module.exports.getItem = async (keys) => {
@@ -69,13 +61,8 @@ module.exports.getItem = async (keys) => {
     Key: keys
   }
 
-  try {
-    const res = await docClient.get(params).promise()
-    return res
-  } catch(e) {
-    console.log(e)
-    return null
-  }
+  const res = await docClient.get(params).promise()
+  return res
 }
 
 module.exports.upsert = async (item) => {
@@ -105,12 +92,6 @@ module.exports.updateTable = async (tableName, key, items) => {
     ExpressionAttributeValues: {}
   }
 
-  try {
-    const res = await docClient.update(params).promise() 
-    return res
-
-  } catch (e) {
-    console.log(e)
-    return null
-  }
+  const res = await docClient.update(params).promise() 
+  return res
 }

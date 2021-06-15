@@ -7,6 +7,7 @@ const MAX_NUM_PLAYERS = 2
 module.exports.create = (gameObj, gameId) => {
   return {
     game_id: gameId,
+    object_type: 'board',
     game_name: GAME_NAME,
     max_players: MAX_NUM_PLAYERS,
     players: [],
