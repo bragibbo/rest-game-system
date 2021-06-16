@@ -66,7 +66,7 @@ module.exports.getItem = async (rangeKey) => {
     }
   };
 
-  const result = await dynamodb.query(params).promise();
+  const result = await docClient.query(params).promise();
   return result.Items;
 }
 

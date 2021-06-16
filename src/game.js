@@ -29,9 +29,9 @@ module.exports.joinGame = async (gameReq) => {
   if(!gameReq.playerName) return "No player name provided"
 
   const gameObjects = await dynamo.getItem(gameReq.gameId)
-  const oldGameObj = gameObjects.find(el => el.object_type && el.object_type.S === 'board')
-  const players = gameObjects.map(el => el.object_type.S.includes('player'))
-  const updatedGameObj = modules[oldGameObj.game_name.S].join({...oldGameObj}, players, gameReq.playerName)
+  const oldGameObj = gameObjects.find(el => el.object_type && el.object_type === 'board')
+  const players = gameObjects.map(el => el.object_type.includes('player'))
+  const updatedGameObj = modules[oldGameObj.game_name].join({...oldGameObj}, players, gameReq.playerName)
   await dynamo.createItem(updatedGameObj)
 
   await insertPlayer(player)
