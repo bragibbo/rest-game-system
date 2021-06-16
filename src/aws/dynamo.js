@@ -55,14 +55,19 @@ module.exports.createItem = async (item) => {
   return res
 }
 
-module.exports.getItem = async (keys) => {
+module.exports.getItem = async (rangeKey) => {
   const params = {
     TableName: GAME_OBJECTS_TABLE,
-    Key: keys
-  }
+    KeyConditionExpression: "game_id = :gameId",
+    ExpressionAttributeValues: {
+      ":gameId": {
+        "S": rangeKey,
+      }
+    }
+  };
 
-  const res = await docClient.get(params).promise()
-  return res
+  const result = await dynamodb.query(params).promise();
+  return result.Items;
 }
 
 module.exports.upsert = async (item) => {

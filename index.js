@@ -23,7 +23,7 @@ app.post('/create', async (req, res) => {
 })
 
 app.post('/join', async (req, res) => {
-  const response = await controller.posJoin(req)
+  const response = await controller.postJoin(req)
   res.status(response.status).send(response)
 })
 
