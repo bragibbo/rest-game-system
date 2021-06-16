@@ -12,6 +12,7 @@ module.exports.create = (gameObj, gameId) => {
     object_type: 'board',
     game_name: GAME_NAME,
     max_players: MAX_NUM_PLAYERS,
+    min_players: 0,
     num_players: 0,
     player_turn: null,
     state: 'Waiting',
@@ -34,6 +35,12 @@ module.exports.join = async (gameObj, players, newPlayerName) => {
     user_name: newPlayerName,
     game_token: gameObj.num_players,
     token: uuidv4()
+  }
+
+  players.push(newPlayer)
+  if (gameObj.num_players >= gameObj.min_players) {
+    gameObj.state = 'Play'
+    gameObj.player_turn = players[Math.floor(Math.random() * players.length)].user_name
   }
 
   return { gameObj, newPlayer }
