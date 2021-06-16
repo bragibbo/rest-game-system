@@ -1,5 +1,5 @@
 const game = require('./game')
-const { InvalidArgumentException, InvalidPlayerNumberException } = require('./util/errors')
+const { InvalidArgumentException, InvalidPlayerNumberException, UnableToJoinInProgressGame, UnableToJoinOrUpdateFinishedGame } = require('./util/errors')
 
 module.exports.listOpenGames = () => {
 
@@ -42,9 +42,10 @@ module.exports.postGame = async (req) => {
 }
 
 function handleError(e) {
-  if (e instanceof InvalidArgumentException) {
-    return { status: 400, message: e.message}
-  } else if (e instanceof InvalidArgumentException) {
+  if (e instanceof InvalidArgumentException ||
+      e instanceof InvalidPlayerNumberException ||
+      e instanceof UnableToJoinOrUpdateFinishedGame ||
+      e instanceof UnableToJoinInProgressGame) {
     return { status: 400, message: e.message}
   } else {
     console.error(e)

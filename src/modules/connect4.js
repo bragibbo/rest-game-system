@@ -1,5 +1,5 @@
 const dynamo = require('../aws/dynamo')
-const { InvalidPlayerNumberException } = require('../util/errors')
+const { InvalidPlayerNumberException, UnableToJoinInProgressGame, UnableToJoinOrUpdateFinishedGame } = require('../util/errors')
 const { v4: uuidv4 } = require('uuid');
 
 const GAME_NAME = 'connect4'
@@ -15,6 +15,7 @@ module.exports.create = (gameObj, gameId) => {
     min_players: 0,
     num_players: 0,
     player_turn: null,
+    winner: null,
     state: 'Waiting',
     board: [['-','-','-','-','-','-','-'],
             ['-','-','-','-','-','-','-'],
@@ -26,6 +27,8 @@ module.exports.create = (gameObj, gameId) => {
 }
 
 module.exports.join = async (gameObj, players, newPlayerName) => {
+  if (gameObj.state === 'Play') throw new UnableToJoinInProgressGame('Unable to join game. Game already in progress')
+  if (gameObj.state === 'Finish') throw new UnableToJoinOrUpdateFinishedGame('Unable to join game. Game already finished.')
   if (players.length >= gameObj.max_players) throw new InvalidPlayerNumberException(`Too many players. Max of ${MAX_NUM_PLAYERS} for ${GAME_NAME}`)
   gameObj.num_players += 1
 
@@ -47,6 +50,7 @@ module.exports.join = async (gameObj, players, newPlayerName) => {
 }
 
 module.exports.update = async () => {
+  if (gameObj.state === 'Finish') throw new UnableToJoinOrUpdateFinishedGame('Unable to update game. Game already finished.')
 
 }
 
