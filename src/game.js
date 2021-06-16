@@ -38,10 +38,13 @@ module.exports.joinGame = async (gameReq) => {
 }
 
 module.exports.getGame = async (gameId) => {
-  if(!gameId) throw new InvalidArgumentException("No game id provided")
-  const gameObjects = await dynamo.getItem(gameReq.gameId)
-  const gameObj = gameObjects.find(el => el.object_type && el.object_type === 'board')
-  return gameObj
+  if (gameId) {
+    const gameObjects = await dynamo.getItem(gameReq.gameId)
+    const gameObj = gameObjects.find(el => el.object_type && el.object_type === 'board')
+    return gameObj
+  } else {
+    return await dynamo.getAllItems('board')
+  }
 }
 
 module.exports.updateGame = async () => {

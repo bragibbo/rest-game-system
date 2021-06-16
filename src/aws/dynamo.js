@@ -68,6 +68,22 @@ module.exports.getItem = async (rangeKey) => {
   return result.Items;
 }
 
+module.exports.getAllItems = async (sortKey) => {
+  const params = {
+    TableName: GAME_OBJECTS_TABLE,
+    IndexName: 'object_type-index',
+    KeyConditionExpression: "object_id = :objectId",
+    ExpressionAttributeValues: {
+      ":objectId": sortKey,
+    }
+  };
+
+  const result = await docClient.query(params).promise();
+  return result.Items;
+}
+
+IndexName: 'publisher_index',
+
 module.exports.updateTable = async (tableName, key, items) => {
   const params = {
     TableName: GAME_OBJECTS_TABLE,
