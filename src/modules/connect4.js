@@ -39,7 +39,7 @@ module.exports.join = async (gameObj, players, newPlayerName) => {
 
   players.push(newPlayer)
   if (gameObj.num_players >= gameObj.min_players) {
-    gameObj.state = 'Play'
+    gameObj.state = 'Ready'
     gameObj.player_turn = players[Math.floor(Math.random() * players.length)].user_name
   }
 
