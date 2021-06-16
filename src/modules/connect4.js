@@ -49,7 +49,7 @@ module.exports.join = async (gameObj, players, newPlayerName) => {
   return { gameObj, newPlayer }
 }
 
-module.exports.update = async () => {
+module.exports.update = async (gameObj, updateObj, players) => {
   if (gameObj.state === 'Finish') throw new UnableToJoinOrUpdateFinishedGame('Unable to update game. Game already finished.')
 
 }
