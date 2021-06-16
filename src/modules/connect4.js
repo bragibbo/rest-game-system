@@ -25,17 +25,18 @@ module.exports.create = (gameObj, gameId) => {
 }
 
 module.exports.join = async (gameObj, players, newPlayerName) => {
-  if (players.length > gameObj.max_players) throw new InvalidPlayerNumberException(`Too many players. Max of ${MAX_NUM_PLAYERS} for ${GAME_NAME}`)
+  if (players.length >= gameObj.max_players) throw new InvalidPlayerNumberException(`Too many players. Max of ${MAX_NUM_PLAYERS} for ${GAME_NAME}`)
   gameObj.num_players += 1
-  
+
   const newPlayer = {
-    game_id: newGameObj.game_id,
+    game_id: gameObj.game_id,
+    object_type: `player#${newPlayerName}#${gameObj.num_players}`,
     user_name: newPlayerName,
-    game_token: 123,
+    game_token: gameObj.num_players,
     token: uuidv4()
   }
 
-  return gameObj, newPlayer
+  return { gameObj, newPlayer }
 }
 
 module.exports.update = async () => {

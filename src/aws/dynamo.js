@@ -60,33 +60,12 @@ module.exports.getItem = async (rangeKey) => {
     TableName: GAME_OBJECTS_TABLE,
     KeyConditionExpression: "game_id = :gameId",
     ExpressionAttributeValues: {
-      ":gameId": {
-        "S": rangeKey,
-      }
+      ":gameId": rangeKey,
     }
   };
 
   const result = await docClient.query(params).promise();
   return result.Items;
-}
-
-module.exports.upsert = async (item) => {
-  const params = {
-    TableName: GAME_OBJECTS_TABLE,
-    Item: item,
-    ConditionExpression: 'attribute_not_exists(id)'
-  };
-
-  try {
-    const res = await docClient.putItem(params).promise()
-    return res
-  } catch(e) {
-    if (e instanceof docClient.ConditionalCheckFailedException) {
-      return await this.getItem(item)
-    }
-    console.log(e)
-    return null
-  }
 }
 
 module.exports.updateTable = async (tableName, key, items) => {

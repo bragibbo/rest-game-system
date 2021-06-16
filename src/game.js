@@ -25,17 +25,16 @@ module.exports.createGame = async (gameObj) => {
 }
 
 module.exports.joinGame = async (gameReq) => {
-  if(!gameReq.gameId) return "No game id provided"
-  if(!gameReq.playerName) return "No player name provided"
+  if(!gameReq.gameId) throw new InvalidArgumentException("No game id provided")
+  if(!gameReq.playerName) throw new InvalidArgumentException("No player name provided")
 
   const gameObjects = await dynamo.getItem(gameReq.gameId)
   const oldGameObj = gameObjects.find(el => el.object_type && el.object_type === 'board')
-  const players = gameObjects.map(el => el.object_type.includes('player'))
-  const updatedGameObj = modules[oldGameObj.game_name].join({...oldGameObj}, players, gameReq.playerName)
-  await dynamo.createItem(updatedGameObj)
-
-  await insertPlayer(player)
-  return { player: player, game: updatedGameObj }
+  const players = gameObjects.filter(el => el.object_type.includes('player'))
+  const { gameObj, newPlayer } = await modules[oldGameObj.game_name].join({...oldGameObj}, players, gameReq.playerName)
+  await dynamo.createItem(gameObj)
+  await dynamo.createItem(newPlayer)
+  return { player: newPlayer, game: gameObj }
 }
 
 module.exports.getGame = async (gameName) => {
@@ -52,10 +51,5 @@ module.exports.updateGame = async () => {
 
 async function insertPlayer(playerObj) {
   const res = await dynamo.createItem('GameUsers', playerObj)
-  return res
-}
-
-async function getPlayer(gameId, gameId, playerName) {
-  const res = await dynamo.getItem('GameUsers', { game_id: gameId, user_name: playerName })
   return res
 }

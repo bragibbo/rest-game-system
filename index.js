@@ -3,7 +3,7 @@ const express = require('express')
 
 const app = express()
 app.use(express.json());
-const port = 3000
+const port = 5050
 
 const controller = require('./src/controller')
 
