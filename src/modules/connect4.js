@@ -62,7 +62,7 @@ module.exports.update = async (gameObj, updateObj, player) => {
   const { i, j } = validateMove(updateObj.move, gameObj.board)
   gameObj.board[i][j] = player.game_token
 
-  const isWin = chkWinner(player.game_token, gameObj.board) === player.game_token
+  const isWin = chkWinner(gameObj.board) === player.game_token
   const hasNoMoreMoves = checkNoMoreMoves(gameObj.board)
   if (isWin) {
     gameObj.winner = player.user_name
@@ -94,6 +94,7 @@ function chkLine(a,b,c,d) {
 }
 
 function chkWinner(bd) {
+  console.log(bd)
   // Check down
   for (r = 0; r < 3; r++)
       for (c = 0; c < 7; c++)
