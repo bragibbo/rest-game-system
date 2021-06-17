@@ -19,7 +19,7 @@ module.exports.listOpenGames = () => {
 module.exports.createGame = async (gameReq) => {
   if(!gameReq.gameName) throw new InvalidArgumentException("No game name provided")
 
-  const newGameObj = modules[gameReq.gameName].create(gameReq, uuidv4())
+  const newGameObj = modules[gameReq.gameName].create(uuidv4())
   await dynamo.createItem(newGameObj)
   return newGameObj
 }
@@ -57,7 +57,7 @@ module.exports.updateGame = async (gameReq) => {
   if (!player) throw new InvalidPlayerToken("Provided token is not valid")
   if (oldGameObj.player_turn !== player.user_name) throw new IsNotPlayersTurn('It is not the provided players turn')
 
-  const gameObj = await modules[oldGameObj.game_name].join({...oldGameObj}, gameReq, player)
+  const gameObj = await modules[oldGameObj.game_name].update({...oldGameObj}, gameReq, player)
   await dynamo.createItem(gameObj)
   return gameObj
 }
