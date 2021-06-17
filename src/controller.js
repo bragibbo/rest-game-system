@@ -1,5 +1,5 @@
 const game = require('./game')
-const { InvalidArgumentException, InvalidPlayerNumberException, UnableToJoinInProgressGame, UnableToJoinOrUpdateFinishedGame } = require('./util/errors')
+const { InvalidArgumentException, InvalidPlayerNumberException, UnableToJoinInProgressGame, UnableToJoinOrUpdateFinishedGame, InvalidMove, InvalidPlayerToken, IsNotPlayersTurn } = require('./util/errors')
 
 module.exports.listOpenGames = () => {
 
@@ -45,7 +45,10 @@ function handleError(e) {
   if (e instanceof InvalidArgumentException ||
       e instanceof InvalidPlayerNumberException ||
       e instanceof UnableToJoinOrUpdateFinishedGame ||
-      e instanceof UnableToJoinInProgressGame) {
+      e instanceof UnableToJoinInProgressGame ||
+      e instanceof IsNotPlayersTurn ||
+      e instanceof InvalidMove ||
+      e instanceof InvalidPlayerToken) {
     return { status: 400, message: e.message}
   } else {
     console.error(e)
