@@ -1,7 +1,7 @@
 const dynamo = require('./aws/dynamo')
 const path = require('path');
 const fs = require('fs');
-const { InvalidArgumentException } = require('./util/errors')
+const { InvalidArgumentException, IsNotPlayersTurn, InvalidPlayerToken } = require('./util/errors')
 const { v4: uuidv4 } = require('uuid');
 
 const modules = {}
@@ -16,10 +16,10 @@ module.exports.listOpenGames = () => {
 
 }
 
-module.exports.createGame = async (gameObj) => {
-  if(!gameObj.gameName) throw new InvalidArgumentException("No game name provided")
+module.exports.createGame = async (gameReq) => {
+  if(!gameReq.gameName) throw new InvalidArgumentException("No game name provided")
 
-  const newGameObj = modules[gameObj.gameName].create(gameObj, uuidv4())
+  const newGameObj = modules[gameReq.gameName].create(gameReq, uuidv4())
   await dynamo.createItem(newGameObj)
   return newGameObj
 }
@@ -47,13 +47,17 @@ module.exports.getGame = async (gameId) => {
   }
 }
 
-module.exports.updateGame = async () => {
-  if(!gameObj.gameId) return "No game id provided"
+module.exports.updateGame = async (gameReq) => {
+  if(!gameReq.gameId) throw InvalidArgumentException("No game id provided")
 
-  modules['connect4'].update()
-}
+  const gameObjects = await dynamo.getItem(gameReq.gameId)
+  const oldGameObj = gameObjects.find(el => el.object_type && el.object_type === 'board')
+  
+  const player = gameObjects.find(el => el.token === gameReq.token)
+  if (!player) throw new InvalidPlayerToken("Provided token is not valid")
+  if (oldGameObj.player_turn !== player.user_name) throw new IsNotPlayersTurn('It is not the provided players turn')
 
-async function insertPlayer(playerObj) {
-  const res = await dynamo.createItem('GameUsers', playerObj)
-  return res
+  const gameObj = await modules[oldGameObj.game_name].join({...oldGameObj}, gameReq, player)
+  await dynamo.createItem(gameObj)
+  return gameObj
 }

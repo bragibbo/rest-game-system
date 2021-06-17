@@ -1,5 +1,9 @@
 const dynamo = require('../aws/dynamo')
-const { InvalidPlayerNumberException, UnableToJoinInProgressGame, UnableToJoinOrUpdateFinishedGame } = require('../util/errors')
+const { InvalidPlayerNumberException, 
+        UnableToJoinInProgressGame, 
+        UnableToJoinOrUpdateFinishedGame, 
+        IsNotPlayersTurn, 
+        InvalidPlayerToken } = require('../util/errors')
 const { v4: uuidv4 } = require('uuid');
 
 const GAME_NAME = 'connect4'
@@ -52,12 +56,11 @@ module.exports.join = async (gameObj, players, newPlayerName) => {
   return { gameObj, newPlayer }
 }
 
-module.exports.update = async (gameObj, updateObj, players) => {
+module.exports.update = async (gameObj, updateObj, player) => {
   if (gameObj.state === 'Finish') throw new UnableToJoinOrUpdateFinishedGame('Unable to update game. Game already finished.')
+  
 
-}
 
-module.exports.get = async () => {
 
 }
 
