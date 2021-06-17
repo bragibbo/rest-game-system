@@ -10,7 +10,7 @@ const MAX_NUM_PLAYERS = 2
 const MIN_NUM_PLAYERS = 2
 const MAX_COLUMNS = 6
 const MAX_ROWS = 5
-const EMPTY_TOKEN = '-'
+const EMPTY_TOKEN = 0
 
 module.exports.create = (gameId) => {
   return {
@@ -24,12 +24,12 @@ module.exports.create = (gameId) => {
     players: [],
     winner: null,
     state: 'Waiting',
-    board: [['-','-','-','-','-','-','-'],
-            ['-','-','-','-','-','-','-'],
-            ['-','-','-','-','-','-','-'],
-            ['-','-','-','-','-','-','-'],
-            ['-','-','-','-','-','-','-'],
-            ['-','-','-','-','-','-','-']]
+    board: [[0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]]
   }
 }
 
@@ -61,8 +61,8 @@ module.exports.update = async (gameObj, updateObj, player) => {
   if (gameObj.state === 'Finish') throw new UnableToJoinOrUpdateFinishedGame('Unable to update game. Game already finished.')
   const { i, j } = validateMove(updateObj.move, gameObj.board)
   gameObj.board[i][j] = player.game_token
-  console.log(gameObj.board)
-  const isWin = checkWinCondition(player.game_token, gameObj.board)
+
+  const isWin = chkWinner(player.game_token, gameObj.board) === player.game_token
   const hasNoMoreMoves = checkNoMoreMoves(gameObj.board)
   if (isWin) {
     gameObj.winner = player.user_name
@@ -88,39 +88,36 @@ function validateMove(move, board) {
   throw new InvalidMove('No more space in indicated column')
 }
 
-function checkWinCondition(player, board) {
+function chkLine(a,b,c,d) {
+  // Check first cell non-zero and all cells match
+  return ((a != 0) && (a ==b) && (a == c) && (a == d));
+}
 
-  // horizontalCheck 
-  for (let j = 0; j<MAX_ROWS-3 ; j++ ){
-      for (let i = 0; i<MAX_COLUMNS; i++){
-          if (board[i][j] === player && board[i][j+1] === player && board[i][j+2] === player && board[i][j+3] === player){
-              return true;
-          }           
-      }
-  }
-  // verticalCheck
-  for (let i = 0; i<MAX_COLUMNS-3 ; i++ ){
-      for (let j = 0; j<MAX_ROWS; j++){
-          if (board[i][j] === player && board[i+1][j] === player && board[i+2][j] === player && board[i+3][j] === player){
-              return true;
-          }           
-      }
-  }
-  // ascendingDiagonalCheck 
-  for (let i=3; i<MAX_COLUMNS; i++){
-      for (let j=0; j<MAX_ROWS-3; j++){
-          if (board[i][j] === player && board[i-1][j+1] === player && board[i-2][j+2] === player && board[i-3][j+3] === player)
-              return true;
-      }
-  }
-  // descendingDiagonalCheck
-  for (let i=3; i<MAX_COLUMNS; i++){
-      for (let j=3; j<MAX_ROWS; j++){
-          if (board[i][j] === player && board[i-1][j-1] === player && board[i-2][j-2] === player && board[i-3][j-3] === player)
-              return true;
-      }
-  }
-  return false;
+function chkWinner(bd) {
+  // Check down
+  for (r = 0; r < 3; r++)
+      for (c = 0; c < 7; c++)
+          if (chkLine(bd[r][c], bd[r+1][c], bd[r+2][c], bd[r+3][c]))
+              return bd[r][c];
+
+  // Check right
+  for (r = 0; r < 6; r++)
+      for (c = 0; c < 4; c++)
+          if (chkLine(bd[r][c], bd[r][c+1], bd[r][c+2], bd[r][c+3]))
+              return bd[r][c];
+
+  // Check down-right
+  for (r = 0; r < 3; r++)
+      for (c = 0; c < 4; c++)
+          if (chkLine(bd[r][c], bd[r+1][c+1], bd[r+2][c+2], bd[r+3][c+3]))
+              return bd[r][c];
+
+  // Check down-left
+  for (r = 3; r < 6; r++)
+      for (c = 0; c < 4; c++)
+          if (chkLine(bd[r][c], bd[r-1][c+1], bd[r-2][c+2], bd[r-3][c+3]))
+              return bd[r][c];
+  return 0;
 }
 
 function checkNoMoreMoves(board) {
