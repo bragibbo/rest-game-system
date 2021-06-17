@@ -72,9 +72,9 @@ module.exports.getAllItems = async (sortKey) => {
   const params = {
     TableName: GAME_OBJECTS_TABLE,
     IndexName: 'object_type-index',
-    KeyConditionExpression: "object_id = :objectId",
+    KeyConditionExpression: "object_type = :objectType",
     ExpressionAttributeValues: {
-      ":objectId": sortKey,
+      ":objectType": sortKey,
     }
   };
 

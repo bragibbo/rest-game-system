@@ -39,7 +39,7 @@ module.exports.joinGame = async (gameReq) => {
 
 module.exports.getGame = async (gameId) => {
   if (gameId) {
-    const gameObjects = await dynamo.getItem(gameReq.gameId)
+    const gameObjects = await dynamo.getItem(gameId)
     const gameObj = gameObjects.find(el => el.object_type && el.object_type === 'board')
     return gameObj
   } else {

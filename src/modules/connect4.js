@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const GAME_NAME = 'connect4'
 const MAX_NUM_PLAYERS = 2
+const MIN_NUM_PLAYERS = 2
 const MAX_COLUMNS = 6
 
 module.exports.create = (gameObj, gameId) => {
@@ -12,9 +13,10 @@ module.exports.create = (gameObj, gameId) => {
     object_type: 'board',
     game_name: GAME_NAME,
     max_players: MAX_NUM_PLAYERS,
-    min_players: 0,
+    min_players: MIN_NUM_PLAYERS,
     num_players: 0,
     player_turn: null,
+    players: [],
     winner: null,
     state: 'Waiting',
     board: [['-','-','-','-','-','-','-'],
@@ -40,6 +42,7 @@ module.exports.join = async (gameObj, players, newPlayerName) => {
     token: uuidv4()
   }
 
+  gameObj.players.push(newPlayer.user_name)
   players.push(newPlayer)
   if (gameObj.num_players >= gameObj.min_players) {
     gameObj.state = 'Ready'
